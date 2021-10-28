@@ -1,0 +1,4 @@
+- id: generate_owners
+  name: "Generate CODEOWNERS"
+  language: python
+  entry: generate_codeowners.py
