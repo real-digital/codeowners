@@ -7,5 +7,5 @@ setup(
     version='1.0',
     description='Pre-commit hook to generate gitlab CODEOWNERS file from `owners.yaml` file',
     scripts=['generate_codeowners.py'],
-    install_requires=['PyYAML'],
+    install_requires=['PyYAML', 'yamale'],
 )

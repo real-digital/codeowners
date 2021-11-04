@@ -6,14 +6,37 @@ from pathlib import Path
 from typing import Dict
 
 import yaml
+from yamale import YamaleError, make_data, make_schema, validate
+from yamale.validators import DefaultValidators
 
 OWNERS = Path("owners.yaml")
+OWNERS_SCHEMA = Path("owners_schema.yaml")
+
+
+def check_owners_file():
+    for f in sys.argv[1:]:
+        if f == str(OWNERS):
+            return False
+    return True
+
+
+def validate_schema():
+    validators = DefaultValidators.copy()
+    schema = make_schema(OWNERS_SCHEMA, validators=validators)
+    config_data = make_data(OWNERS)
+    try:
+        validate(schema=schema, data=config_data, strict=True)
+    except YamaleError as e:
+        exit(
+            f"Error validating config from {str(OWNERS)}. Errors: {','.join([str(result) for result in e.results])}"
+        )
 
 
 def main():
-    if sys.argv[1] != str(OWNERS):
-        exit(f"missing owners file in {sys.argv}")
+    if check_owners_file():
+        return
 
+    validate_schema()
     with OWNERS.open("r") as ows:
         try:
             paths_file = yaml.safe_load(ows)
